@@ -3,8 +3,8 @@ package com.macrowkotlin
 public typealias Rules = MutableMap<String, (Any?) -> String>
 
 open class MacrowKotlin {
-    private val prefix = "#\\{"
-    private val suffix = "\\}"
+    open val prefix = "#\\{"
+    open val suffix = "\\}"
     open val rules: Rules = mutableMapOf()
 
     fun apply(str: String): String {

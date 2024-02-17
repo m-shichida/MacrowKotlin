@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class MacrowKotlinTest {
-    class HogeMacrow: MacrowKotlin() {
+    class HogeMacrow : MacrowKotlin() {
         override val rules: Rules = mutableMapOf(
             "hoge" to { "fuga" }
         )
@@ -12,15 +12,28 @@ class MacrowKotlinTest {
 
     @Test
     fun testWithApplyRule() {
-        val hoge = HogeMacrow()
-        val result = hoge.apply("#{hoge} happened")
+        val result = HogeMacrow().apply("#{hoge} happened")
         assertEquals("fuga happened", result)
     }
 
     @Test
     fun testWithApplyRuleWhenNoRule() {
-        val hoge = HogeMacrow()
-        val result = hoge.apply("#{fuga} happened")
+        val result = HogeMacrow().apply("#{fuga} happened")
+        assertEquals("fuga happened", result)
+    }
+
+    @Test
+    fun testWithApplyPrefixAndSuffix() {
+        class OverridePrefixAndSuffix : MacrowKotlin() {
+            override val prefix = "##"
+            override val suffix = "##"
+
+            override val rules: Rules = mutableMapOf(
+                "hoge" to { "fuga" }
+            )
+        }
+
+        val result = OverridePrefixAndSuffix().apply("##hoge## happened")
         assertEquals("fuga happened", result)
     }
 }
