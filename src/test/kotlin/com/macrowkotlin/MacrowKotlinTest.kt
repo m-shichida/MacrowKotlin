@@ -6,35 +6,28 @@ import kotlin.test.assertEquals
 class MacrowKotlinTest {
     class HogeMacrow : MacrowKotlin() {
         init {
-            rule("hoge") { "fuga" }
-            rule("length") { getLength(it) }
-        }
-
-        private fun getLength(value: Any?): String {
-            return when (value) {
-                is List<*> -> value.size.toString()
-                is String -> value.length.toString()
-                else -> "0"
+            rule("something") {
+                "trouble"
+            }
+            rule("length") { obj ->
+                (obj as? List<*>)?.size?.toString() ?: ""
             }
         }
     }
 
     @Test
     fun testWithApplyRule() {
-        val hoge = HogeMacrow()
-        val result1 = hoge.apply("#{hoge} happened")
-        val list = listOf(1, 2)
-        val result2 = hoge.apply("[1, 2] length is #{length}", list)
-        val result3 = hoge.apply("hoge length is #{length}", "hoge")
-        assertEquals("fuga happened", result1)
+        val macrow = HogeMacrow()
+        val result1 = macrow.apply("#{something} happened")
+        val result2 = macrow.apply("[1, 2] length is #{length}", listOf(1, 2))
+        assertEquals("trouble happened", result1)
         assertEquals("[1, 2] length is 2", result2)
-        assertEquals("hoge length is 4", result3)
     }
 
     @Test
     fun testWithApplyRuleWhenNoRule() {
-        val result = HogeMacrow().apply("#{fuga} happened")
-        assertEquals("fuga happened", result)
+        val result = HogeMacrow().apply("#{hoge} happened")
+        assertEquals("hoge happened", result)
     }
 
     @Test
@@ -44,11 +37,13 @@ class MacrowKotlinTest {
             override val suffix = "##"
 
             init {
-                rule("hoge") { "fuga" }
+                rule("something") {
+                    "trouble"
+                }
             }
         }
 
-        val result = OverridePrefixAndSuffix().apply("##hoge## happened")
-        assertEquals("fuga happened", result)
+        val result = OverridePrefixAndSuffix().apply("##something## happened")
+        assertEquals("trouble happened", result)
     }
 }
