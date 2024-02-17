@@ -4,10 +4,23 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class MacrowKotlinTest {
+    class HogeMacrow: MacrowKotlin() {
+        override val rules: Rules = mutableMapOf(
+            "hoge" to { "fuga" }
+        )
+    }
+
     @Test
-    fun testWithApply() {
-        val macrowKotlin = MacrowKotlin()
-        val result = macrowKotlin.apply("Something")
-        assertEquals("Something happened", result)
+    fun testWithApplyRule() {
+        val hoge = HogeMacrow()
+        val result = hoge.apply("#{hoge} happened")
+        assertEquals("fuga happened", result)
+    }
+
+    @Test
+    fun testWithApplyRuleWhenNoRule() {
+        val hoge = HogeMacrow()
+        val result = hoge.apply("#{fuga} happened")
+        assertEquals("fuga happened", result)
     }
 }
