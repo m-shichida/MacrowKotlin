@@ -1,15 +1,21 @@
 package com.macrowkotlin
 
-public typealias Rules = MutableMap<String, (Any?) -> String>
-
 open class MacrowKotlin {
     open val prefix = "#\\{"
     open val suffix = "\\}"
-    open val rules: Rules = mutableMapOf()
+    private val rules: MutableMap<String, (Any?) -> String> = mutableMapOf()
 
-    fun apply(str: String): String {
+    fun rule(keyword: String, value: (Any?) -> String) {
+        rules[keyword] = value
+    }
+
+    fun apply(str: String, obj: Any? = null): String {
         val keyword = extractKeyword(str)
-        val value = rules[keyword]?.invoke(keyword) ?: keyword
+        val value = if (obj == null) {
+            rules[keyword]?.invoke(keyword) ?: keyword
+        } else {
+            rules[keyword]?.invoke(obj) ?: keyword
+        }
         return str.replace(Regex("${prefix}(.+?)${suffix}"), value)
     }
 
